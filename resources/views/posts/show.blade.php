@@ -9,8 +9,8 @@
             Post Info
         </div>
         <div class="card-body">
-            <h5 class="card-title">Title: {{ $post['title'] }}</h5>
-            <p class="card-text">Description:{{ $post['description'] }}</p>
+            <h5 class="card-title">Title: {{ $post->title }}</h5>
+            <p class="card-text">Description:{{ $post->description }}</p>
         </div>
     </div>
 
@@ -19,10 +19,11 @@
             Post Creator Info
         </div>
         <div class="card-body">
-
-            <h5 class="card-title">Name: Jihad</h5>
-            <p class="card-text">Email: jihad@gmail.com</p>
-            <p class="card-text">Created At: Thursday 25-02-2002 03:15:36 PM</p>
+      
+                <h5 class="card-title">Name: Jihad</h5>
+                <p class="card-text">Email: jihad@gmail.com</p>
+                <p class="card-text">Created At: Thursday 25-02-2002 03:15:36 PM</p>
+  
         </div>
 
     </div>

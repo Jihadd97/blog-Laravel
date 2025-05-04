@@ -23,20 +23,21 @@
             </tr>
         </thead>
         <tbody class="table-group-divider">
-
             @foreach ($posts as $post)
+                {{-- @dd($posts, $post) --}}
                 <tr>
-                    <th scope="row">{{ $post['id'] }}</th>
-                    <th>{{ $post['title'] }}</th>
-                    <th>{{ $post['posted_by'] }}</th>
-                    <th>{{ $post['created_at'] }}</th>
+                    <th>{{ $post->id }}</th>
+                    <th>{{ $post->title }}</th>
+                    <th>{{ $post->posted_by }}</th>
+                    <th>{{ $post->created_at }}</th>
                     <td>
-                        <a href="{{ route('posts.show', $post['id']) }}" class="btn btn-info">View</a>
-                        <a href="{{ route('posts.edit', $post['id']) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ route('posts.show', $post->id ) }}" class="btn btn-info">View</a>
+                        <a href="{{ route('posts.edit', $post->id ) }}" class="btn btn-primary">Edit</a>
+                  
                         <form style="display:inline" method="POST" action="{{ route('posts.destroy', $post['id']) }}">
-                           @csrf
-                           @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" onclick= "return confirm('Are You Sure Want to Delete?') " class="btn btn-danger">Delete</button>
                         </form>
                     </td>
 

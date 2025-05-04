@@ -2,59 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\User;
+
 // use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $allPosts = [
-            ['id' => 1, 'title' => 'PHP', 'posted_by' => 'Jihad', 'created_at' => '2022-10-23 06:11:00'],
-            ['id' => 2, 'title' => 'Javascript', 'posted_by' => 'Mahmoud', 'created_at' => '2023-07-12 08:00:00'],
-            ['id' => 3, 'title' => 'CSS', 'posted_by' => 'Mai', 'created_at' => '2024-06-10 03:00:00'],
-            ['id' => 4, 'title' => 'HTML', 'posted_by' => 'Adham', 'created_at' => '2025-05-05 10:02:00'],
-        ];
-        return view('posts.index', ['posts' => $allPosts]);
+        // select * from posts;
+        $postsFromDB = Post::all(); //collection object
+
+        return view('posts.index', ['posts' => $postsFromDB]);
     }
 
-    public function show($postId)
+    public function show(Post $post)
     {
-        // return 'This is post Id: '. $postId; #for later
-        $singlePost = ['id' => 1, 'title' => 'PHP', 'description' => ' This is description', 'posted_by' => 'Jihad', 'created_at' => '2022-10-23 06:11:00'];
+        // $singlePostFromDB = Post::find($postId);                       // select * from posts where id = $postId limit 1
+        // $singlePostFromDB = Post::findorfail($postId); 
+        // if (is_null($singlePostFromDB)) {
+        //     return to_route('posts.index');
+        // }
+        // $singlePostFromDB = Post::where('id', $postId);              // eloquent query builder object
+        // $singlePostFromDB = Post::where('title', 'PHP')->first();    // select * from posts title = 'PHP' limit 1
+        // $singlePostFromDB = Post::where('title', 'PHP')->get();      // select * from posts where title = 'PHP' 
+        // dd($singlePostFromDB);                                       // model object
 
-        return view('posts.show', ['post' => $singlePost]);
+        return view('posts.show', ['post' => $post]);
     }
 
     public function create()
-    {
-        return view('posts.create');
+    {   //select * from users;
+        $users = User::all();
+        return view('posts.create', ['users' => $users]); //pass the data to posts.create view
     }
 
     public function store()
     {
-        // $request = request();
-        // dd($request->title,$request->method);
+
         //1- get the user data (hold them in variables)
         $data = request()->all();
         // dd($data);
 
-        $title = request()->title;
+        $title = request()->title;   // get the title from the request
         $description = request()->description;
         $postCreator = request()->post_creator;
-        dd($data, $title, $description, $postCreator);
 
-        //2- store the user data in db
+        //2- store the submitted user data in db     (1st way)
+        // $post = new Post();                      // create a new instance of the Post model
+        // $post->title = $title;                   // assign the title to post model
+        // $post->description = $description;       // assign the description to the model
 
+        // $post->save();                           // insert the data into the database
+
+        Post::create([                              // 2nd way create a new instance of the Post model
+            'title' => $title,
+            'description' => $description,
+        ]);
         //3- redirection to the index page
         return to_route('posts.index');
     }
 
-    public function edit()
+    public function edit(Post $post)
     {
-        return view('posts.edit');
+        // select * from users;
+        $users = User::all();
+        return view('posts.edit', ['users' => $users, 'post' => $post]); //pass the data to posts.create view
     }
 
-    public function update()
+    public function update($postId)
     {
 
         //1- get the user data (hold them in variables)
@@ -65,16 +82,27 @@ class PostController extends Controller
 
         // dd($title, $description, $postCreator);
 
-        //2- update the user data in db
+        //2- select the data
+        $post = Post::findorfail($postId);
 
-        //3- redirection to the single post page
-        return to_route('posts.show',1);
+        //3- update the submitted user data in db 
+        $post->update([
+            'title' => $title,
+            'description' => $description,
+            'post_creator' => $postCreator,
+        ]);
+
+        //4- redirection to the single post page
+        return to_route('posts.show', $postId);
     }
 
-    public function destroy(){
-        //1- Delete data from db
-
-        //2- redirect to the index page
+    public function destroy($postId)
+    {   //1- select the post 
+        $post = Post::findorfail($postId);
+        // dd($postId);
+        //2- delete the post from the database
+        $post->delete();
+        //3- redirect to the index page
         return to_route('posts.index');
     }
 }
