@@ -13,7 +13,7 @@ class PostController extends Controller
     {
         // select * from posts;
         $postsFromDB = Post::all(); //collection object
-
+        // dd($postsFromDB);
         return view('posts.index', ['posts' => $postsFromDB]);
     }
 
@@ -29,7 +29,7 @@ class PostController extends Controller
         // $singlePostFromDB = Post::where('title', 'PHP')->get();      // select * from posts where title = 'PHP' 
         // dd($singlePostFromDB);                                       // model object
 
-        return view('posts.show', ['post' => $post]);
+        return view('posts.show', ['post' => $post]); //pass the data to posts.show view
     }
 
     public function create()
@@ -40,12 +40,15 @@ class PostController extends Controller
 
     public function store()
     {
-
+        //code to validate the data
+        request()->validate([
+            'title' => 'required|min:5|max:100',
+            'description' => 'required|min:10|max:500',
+            'post_creator' => 'required|exists:users,id',  //if the user submitted a user id that does not exist in the users table, it will throw an error
+        ]);
         //1- get the user data (hold them in variables)
-        $data = request()->all();
-        // dd($data);
 
-        $title = request()->title;   // get the title from the request
+        $title = request()->title;                  // get the title from the request
         $description = request()->description;
         $postCreator = request()->post_creator;
 
@@ -59,7 +62,9 @@ class PostController extends Controller
         Post::create([                              // 2nd way create a new instance of the Post model
             'title' => $title,
             'description' => $description,
+            'user_id' => $postCreator,
         ]);
+
         //3- redirection to the index page
         return to_route('posts.index');
     }
@@ -68,12 +73,17 @@ class PostController extends Controller
     {
         // select * from users;
         $users = User::all();
-        return view('posts.edit', ['users' => $users, 'post' => $post]); //pass the data to posts.create view
+        return view('posts.edit', ['users' => $users, 'post' => $post]);            //pass the data to posts.create view
     }
 
-    public function update($postId)
+    public function update(Post $post)
     {
-
+        //code to validate the data
+        request()->validate([
+            'title' => 'required|min:5|max:100',
+            'description' => 'required|min:10|max:500',
+            'post_creator' => 'required|exists:users,id',  //if the user submitted a user id that does not exist in the users table, it will throw an error
+        ]);
         //1- get the user data (hold them in variables)
 
         $title = request()->title;
@@ -83,23 +93,23 @@ class PostController extends Controller
         // dd($title, $description, $postCreator);
 
         //2- select the data
-        $post = Post::findorfail($postId);
+        // $post = Post::findorfail($postId);
 
         //3- update the submitted user data in db 
         $post->update([
             'title' => $title,
             'description' => $description,
-            'post_creator' => $postCreator,
+            'user_id' => $postCreator,
         ]);
 
         //4- redirection to the single post page
-        return to_route('posts.show', $postId);
+        return to_route('posts.show', $post);
     }
 
-    public function destroy($postId)
+    public function destroy(Post $post)
     {   //1- select the post 
-        $post = Post::findorfail($postId);
-        // dd($postId);
+        // $post = Post::findorfail($postId);
+        // dd($post);
         //2- delete the post from the database
         $post->delete();
         //3- redirect to the index page

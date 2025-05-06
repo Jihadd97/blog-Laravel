@@ -23,13 +23,14 @@
             </tr>
         </thead>
         <tbody class="table-group-divider">
-            @foreach ($posts as $post)
+            @foreach ($posts as $post )
                 {{-- @dd($posts, $post) --}}
                 <tr>
                     <th>{{ $post->id }}</th>
                     <th>{{ $post->title }}</th>
-                    <th>{{ $post->posted_by }}</th>
-                    <th>{{ $post->created_at }}</th>
+                    <th>{{ $post->user?->name ?? 'Not found!' }}</th>
+                    {{-- @dd($post->created_at->format('D d-m-Y')) --}}
+                    <th>{{ $post->created_at->format('d-m-Y')}}</th>
                     <td>
                         <a href="{{ route('posts.show', $post->id ) }}" class="btn btn-info">View</a>
                         <a href="{{ route('posts.edit', $post->id ) }}" class="btn btn-primary">Edit</a>

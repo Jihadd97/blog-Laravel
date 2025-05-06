@@ -19,11 +19,10 @@
             Post Creator Info
         </div>
         <div class="card-body">
-      
-                <h5 class="card-title">Name: Jihad</h5>
-                <p class="card-text">Email: jihad@gmail.com</p>
-                <p class="card-text">Created At: Thursday 25-02-2002 03:15:36 PM</p>
-  
+            <h5 class="card-title">Name: {{$post->user?->name ?? 'Not found!' }}</h5>
+            <p class="card-text">Email: {{ $post->user?->email ?? 'Not found!'  }}</p>
+            <p class="card-text">Created At: {{ $post->user?->created_at?? 'Not found!'  }}</p>
+
         </div>
 
     </div>
